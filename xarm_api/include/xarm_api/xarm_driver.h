@@ -41,6 +41,9 @@ namespace xarm_api
 
         sensor_msgs::msg::JointState* get_joint_states();
 
+        /* only use in xarm_controller */
+        int update_joint_states(bool initialized = true, int flag = -1);
+
     private:
         void _report_connect_changed_callback(bool connected, bool reported);
         void _report_data_callback(XArmReportData *report_data_ptr);
@@ -82,7 +85,8 @@ namespace xarm_api
         rclcpp::Node::SharedPtr hw_node_;
 
         int dof_;
-        int joint_states_rate_;
+        int joint_state_rate_;
+        int joint_state_flags_;
         bool in_ros_control_;
         int vacuum_gripper_hardware_version_;
         std::string report_type_;
