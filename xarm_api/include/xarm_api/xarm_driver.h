@@ -55,7 +55,7 @@ namespace xarm_api
         rclcpp_action::CancelResponse _handle_xarm_gripper_action_cancel(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle);
         void _handle_xarm_gripper_action_accepted(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle);
         void _xarm_gripper_action_execute(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle);
-        void _pub_xarm_gripper_joint_states(float pos);
+        void _pub_xarm_gripper_joint_states(int pos);
 
         void _init_bio_gripper(void);
         inline float _bio_gripper_pos_convert(float pos, bool reversed = false);
@@ -63,7 +63,7 @@ namespace xarm_api
         rclcpp_action::CancelResponse _handle_bio_gripper_action_cancel(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle);
         void _handle_bio_gripper_action_accepted(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle);
         void _bio_gripper_action_execute(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle);
-        void _pub_bio_gripper_joint_states(float pos);
+        void _pub_bio_gripper_joint_states(int pos);
 
         template<typename ServiceT, typename CallbackT>
     	typename rclcpp::Service<ServiceT>::SharedPtr _create_service(const std::string & service_name, CallbackT && callback);
