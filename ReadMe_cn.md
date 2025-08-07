@@ -62,47 +62,47 @@
 - ### 4.1 创建工作区
     ```bash
     # 如果已经有自己工作区，请跳过这一步骤
-    $ cd ~
-    $ mkdir -p dev_ws/src
+    cd ~
+    mkdir -p dev_ws/src
     ```
 
 - ### 4.2 获取xarm_ros2源码包
     ```bash
     # 记得先source已安装的ros2环境
-    $ cd ~/dev_ws/src
+    cd ~/dev_ws/src
     # 注意需要--recursive参数，否则不会下载源码包的子模块源码
     # 注意使用-b参数指令分支, $ROS_DISTRO表示当前激活的ROS版本，如果没有激活ROS环境，需要自定指定分支(foxy/galactic/humble)
-    $ git clone https://github.com/xArm-Developer/xarm_ros2.git --recursive -b $ROS_DISTRO
+    git clone https://github.com/xArm-Developer/xarm_ros2.git --recursive -b $ROS_DISTRO
     ```
 
 - ### 4.3 升级xarm_ros2源码包
     ```bash
-    $ cd ~/dev_ws/src/xarm_ros2
+    cd ~/dev_ws/src/xarm_ros2
 
     # 如果克隆时没有使用--recursive或--recurse-submodules参数, 使用该命令来初始化并更新所有子模块
-    $ git submodule update --init --recursive
+    git submodule update --init --recursive
     
     # 拉取（Pull）主仓库并更新子模块
-    $ git pull --recurse-submodules
+    git pull --recurse-submodules
     ```
 
 - ### 4.4 安装xarm_ros2依赖
     ```bash
     # 记得先source已安装的ros2环境
-    $ cd ~/dev_ws/src/
-    $ rosdep update
-    $ rosdep install --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y
+    cd ~/dev_ws/src/
+    rosdep update
+    rosdep install --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y
     ```
 
 - ### 4.5 编译xarm_ros2
     ```bash
     # 记得先source已安装的ros2环境和moveit2环境
-    $ cd ~/dev_ws/
+    cd ~/dev_ws/
     # 编译所有包
-    $ colcon build
+    colcon build
     
     # 编译单个包
-    $ colcon build --packages-select xarm_api
+    colcon build --packages-select xarm_api
     ```
 
 
@@ -115,8 +115,8 @@ __注意1： 如果当前局域网有多人使用ros2，为避免相互间发生
 
 __注意2： 运行xarm_ros2中的程序或启动脚本之前请先source当前工作区环境__  
 ```bash
-$ cd ~/dev_ws/
-$ source install/setup.bash
+cd ~/dev_ws/
+source install/setup.bash
 ```
 __注意3： 以下启动说明以6轴为例，5轴和7轴的用法只需找到对应的启动文件或指定对应的参数__  
 __注意4: 以下描述的<hw_ns>用实际的替换，xarm系列默认为xarm, 其余的默认为ufactory__  
@@ -124,11 +124,11 @@ __注意4: 以下描述的<hw_ns>用实际的替换，xarm系列默认为xarm, �
 - ### 5.1 xarm_description
     此模块包含机械臂的描述文件，通过以下启动脚本可以在rviz中显示对应的机械臂模型
     ```bash
-    $ cd ~/dev_ws/
+    cd ~/dev_ws/
     # add_gripper为true时会加载xarm夹爪的模型
     # add_vacuum_gripper为true时会加载xarm真空吸头的模型
     # 注意：只能加载一款末端器件
-    $ ros2 launch xarm_description xarm6_rviz_display.launch.py [add_gripper:=true] [add_vacuum_gripper:=true]
+    ros2 launch xarm_description xarm6_rviz_display.launch.py [add_gripper:=true] [add_vacuum_gripper:=true]
     ```
 
 - ### 5.2 xarm_msgs
@@ -168,74 +168,74 @@ __注意4: 以下描述的<hw_ns>用实际的替换，xarm系列默认为xarm, �
     
     - __启动与测试（xArm）__:
         ```bash
-        $ cd ~/dev_ws/
+        cd ~/dev_ws/
         # 启动xarm_driver_node
-        $ ros2 launch xarm_api xarm6_driver.launch.py robot_ip:=192.168.1.117
+        ros2 launch xarm_api xarm6_driver.launch.py robot_ip:=192.168.1.117
         # 测试service
-        $ ros2 run xarm_api test_xarm_ros_client
+        ros2 run xarm_api test_xarm_ros_client
         # 测试topic
-        $ ros2 run xarm_api test_robot_states
+        ros2 run xarm_api test_robot_states
         ```
     - __使用命令行（xArm）__:
 
         ```bash
-        $ cd ~/dev_ws/
+        cd ~/dev_ws/
         # 启动 xarm_driver_node
-        $ ros2 launch xarm_api xarm6_driver.launch.py robot_ip:=192.168.1.117
+        ros2 launch xarm_api xarm6_driver.launch.py robot_ip:=192.168.1.117
         
         # 使能所有关节:
-        $ ros2 service call /xarm/motion_enable xarm_msgs/srv/SetInt16ById "{id: 8, data: 1}"
+        ros2 service call /xarm/motion_enable xarm_msgs/srv/SetInt16ById "{id: 8, data: 1}"
         
         # 设置适当的模式 (0) 和状态 (0)
-        $ ros2 service call /xarm/set_mode xarm_msgs/srv/SetInt16 "{data: 0}"
-        $ ros2 service call /xarm/set_state xarm_msgs/srv/SetInt16 "{data: 0}"
+        ros2 service call /xarm/set_mode xarm_msgs/srv/SetInt16 "{data: 0}"
+        ros2 service call /xarm/set_state xarm_msgs/srv/SetInt16 "{data: 0}"
         
         # 笛卡尔直线运动: (单位: mm, rad)
-        $ ros2 service call /xarm/set_position xarm_msgs/srv/MoveCartesian "{pose: [300, 0, 250, 3.14, 0, 0], speed: 50, acc: 500, mvtime: 0}"   
+        ros2 service call /xarm/set_position xarm_msgs/srv/MoveCartesian "{pose: [300, 0, 250, 3.14, 0, 0], speed: 50, acc: 500, mvtime: 0}"   
         
         # 关节运动 适用xArm6: (单位: rad)
-        $ ros2 service call /xarm/set_servo_angle xarm_msgs/srv/MoveJoint "{angles: [-0.58, 0, 0, 0, 0, 0], speed: 0.35, acc: 10, mvtime: 0}"
+        ros2 service call /xarm/set_servo_angle xarm_msgs/srv/MoveJoint "{angles: [-0.58, 0, 0, 0, 0, 0], speed: 0.35, acc: 10, mvtime: 0}"
         ```
     - __使用命令行（lite6）__:
 
         ```bash
-        $ cd ~/dev_ws/
+        cd ~/dev_ws/
         # 启动 ufactory_driver_node
-        $ ros2 launch xarm_api lite6_driver.launch.py robot_ip:=192.168.1.161
+        ros2 launch xarm_api lite6_driver.launch.py robot_ip:=192.168.1.161
         
         # 使能所有关节:
-        $ ros2 service call /ufactory/motion_enable xarm_msgs/srv/SetInt16ById "{id: 8, data: 1}"
+        ros2 service call /ufactory/motion_enable xarm_msgs/srv/SetInt16ById "{id: 8, data: 1}"
         
         # 设置适当的模式 (0) 和状态 (0)
-        $ ros2 service call /ufactory/set_mode xarm_msgs/srv/SetInt16 "{data: 0}"
-        $ ros2 service call /ufactory/set_state xarm_msgs/srv/SetInt16 "{data: 0}"
+        ros2 service call /ufactory/set_mode xarm_msgs/srv/SetInt16 "{data: 0}"
+        ros2 service call /ufactory/set_state xarm_msgs/srv/SetInt16 "{data: 0}"
         
         # 笛卡尔直线运动: (单位: mm, rad)
-        $ ros2 service call /ufactory/set_position xarm_msgs/srv/MoveCartesian "{pose: [250, 0, 250, 3.14, 0, 0], speed: 50, acc: 500, mvtime: 0}"   
+        ros2 service call /ufactory/set_position xarm_msgs/srv/MoveCartesian "{pose: [250, 0, 250, 3.14, 0, 0], speed: 50, acc: 500, mvtime: 0}"   
         
         # 关节运动: (单位: rad)
-        $ ros2 service call /ufactory/set_servo_angle xarm_msgs/srv/MoveJoint "{angles: [-0.58, 0, 0, 0, 0, 0], speed: 0.35, acc: 10, mvtime: 0}"
+        ros2 service call /ufactory/set_servo_angle xarm_msgs/srv/MoveJoint "{angles: [-0.58, 0, 0, 0, 0, 0], speed: 0.35, acc: 10, mvtime: 0}"
         ```
     
     - __使用命令行（UFACTORY850）__:
 
         ```bash
-        $ cd ~/dev_ws/
+        cd ~/dev_ws/
         # 启动 ufactory_driver_node
-        $ ros2 launch xarm_api uf850_driver.launch.py robot_ip:=192.168.1.181
+        ros2 launch xarm_api uf850_driver.launch.py robot_ip:=192.168.1.181
         
         # 使能所有关节:
-        $ ros2 service call /ufactory/motion_enable xarm_msgs/srv/SetInt16ById "{id: 8, data: 1}"
+        ros2 service call /ufactory/motion_enable xarm_msgs/srv/SetInt16ById "{id: 8, data: 1}"
         
         # 设置适当的模式 (0) 和状态 (0)
-        $ ros2 service call /ufactory/set_mode xarm_msgs/srv/SetInt16 "{data: 0}"
-        $ ros2 service call /ufactory/set_state xarm_msgs/srv/SetInt16 "{data: 0}"
+        ros2 service call /ufactory/set_mode xarm_msgs/srv/SetInt16 "{data: 0}"
+        ros2 service call /ufactory/set_state xarm_msgs/srv/SetInt16 "{data: 0}"
         
         # 笛卡尔直线运动: (单位: mm, rad)
-        $ ros2 service call /ufactory/set_position xarm_msgs/srv/MoveCartesian "{pose: [250, 0, 250, 3.14, 0, 0], speed: 50, acc: 500, mvtime: 0}"   
+        ros2 service call /ufactory/set_position xarm_msgs/srv/MoveCartesian "{pose: [250, 0, 250, 3.14, 0, 0], speed: 50, acc: 500, mvtime: 0}"   
         
         # 关节运动: (单位: rad)
-        $ ros2 service call /ufactory/set_servo_angle xarm_msgs/srv/MoveJoint "{angles: [-0.58, 0, 0, 0, 0, 0], speed: 0.35, acc: 10, mvtime: 0}"
+        ros2 service call /ufactory/set_servo_angle xarm_msgs/srv/MoveJoint "{angles: [-0.58, 0, 0, 0, 0, 0], speed: 0.35, acc: 10, mvtime: 0}"
         ```
 
     注: 请在使用真机测试之前仔细研究[Mode](https://github.com/xArm-Developer/xarm_ros#6-mode-change), State和可用运动指令的含义。注意**Lite 6与xArm系列提供的服务所在的命名空间不同**。  
@@ -244,15 +244,15 @@ __注意4: 以下描述的<hw_ns>用实际的替换，xarm系列默认为xarm, �
 - ### 5.5 xarm_controller
     此模块是ros2_control和机械臂通信的硬件接口模块
     ```bash
-    $ cd ~/dev_ws/
+    cd ~/dev_ws/
     # 对于xArm系列(xarm6举例)：add_gripper为true时会加载xarm夹爪的模型
-    $ ros2 launch xarm_controller xarm6_control_rviz_display.launch.py robot_ip:=192.168.1.117 [add_gripper:=true]
+    ros2 launch xarm_controller xarm6_control_rviz_display.launch.py robot_ip:=192.168.1.117 [add_gripper:=true]
 
     # 对于lite 6: add_gripper为true时会加载Lite夹爪的模型
-    $ ros2 launch xarm_controller lite6_control_rviz_display.launch.py robot_ip:=192.168.1.161 [add_gripper:=true]
+    ros2 launch xarm_controller lite6_control_rviz_display.launch.py robot_ip:=192.168.1.161 [add_gripper:=true]
 
     # 对于UFACTORY850: add_gripper为true时会加载xarm夹爪的模型
-    $ ros2 launch xarm_controller uf850_control_rviz_display.launch.launch.py robot_ip:=192.168.1.181 [add_gripper:=true]
+    ros2 launch xarm_controller uf850_control_rviz_display.launch.launch.py robot_ip:=192.168.1.181 [add_gripper:=true]
     ```
 
 - ### 5.6 xarm_moveit_config
@@ -261,35 +261,35 @@ __注意4: 以下描述的<hw_ns>用实际的替换，xarm系列默认为xarm, �
     - 【虚拟】启动moveit并在rviz显示, 控制机械臂  
 
         ```bash
-        $ cd ~/dev_ws/
+        cd ~/dev_ws/
         # 对于xArm系列(xarm6举例)：add_gripper为true时会加载xarm夹爪的模型
-        $ ros2 launch xarm_moveit_config xarm6_moveit_fake.launch.py [add_gripper:=true]
+        ros2 launch xarm_moveit_config xarm6_moveit_fake.launch.py [add_gripper:=true]
 
         # 对于lite 6: add_gripper为true时会加载Lite夹爪的模型
-        $ ros2 launch xarm_moveit_config lite6_moveit_fake.launch.py [add_gripper:=true]
+        ros2 launch xarm_moveit_config lite6_moveit_fake.launch.py [add_gripper:=true]
 
         # 对于UFACTORY850: add_gripper为true时会加载xarm夹爪的模型
-        $ ros2 launch xarm_moveit_config uf850_moveit_fake.launch.py [add_gripper:=true]
+        ros2 launch xarm_moveit_config uf850_moveit_fake.launch.py [add_gripper:=true]
         ```
     
     - 【真机】启动moveit并在rviz显示, 控制机械臂  
 
         ```bash
-        $ cd ~/dev_ws/
+        cd ~/dev_ws/
         # 对于xArm系列(xarm6举例)：add_gripper为true时会加载xarm夹爪的模型
-        $ ros2 launch xarm_moveit_config xarm6_moveit_realmove.launch.py robot_ip:=192.168.1.117 [add_gripper:=true]
+        ros2 launch xarm_moveit_config xarm6_moveit_realmove.launch.py robot_ip:=192.168.1.117 [add_gripper:=true]
 
         # 对于lite 6: add_gripper为true时会加载Lite夹爪的模型
-        $ ros2 launch xarm_moveit_config lite6_moveit_realmove.launch.py robot_ip:=192.168.1.161 [add_gripper:=true]
+        ros2 launch xarm_moveit_config lite6_moveit_realmove.launch.py robot_ip:=192.168.1.161 [add_gripper:=true]
 
         # 对于UFACTORY850: add_gripper为true时会加载xarm夹爪的模型
-        $ ros2 launch xarm_moveit_config uf850_moveit_realmove.launch.py robot_ip:=192.168.1.181 [add_gripper:=true]
+        ros2 launch xarm_moveit_config uf850_moveit_realmove.launch.py robot_ip:=192.168.1.181 [add_gripper:=true]
         ```
     
     - 【Dual虚拟】启动moveit并在rviz显示, 控制两台机械臂  
 
         ```bash
-        $ cd ~/dev_ws/
+        cd ~/dev_ws/
         # add_gripper为true时会加载xarm夹爪的模型
         # add_gripper_1参数可以单独指定左臂是否加载夹爪的模型，默认为add_gripper的值
         # add_gripper_2参数可以单独指定右臂是否加载夹爪的模型，默认为add_gripper的值
@@ -297,19 +297,19 @@ __注意4: 以下描述的<hw_ns>用实际的替换，xarm系列默认为xarm, �
         # dof_2参数可以单独指定右臂轴数，默认为dof的值（这里为6，不同启动脚本不一样）
 
         # 对于xArm系列（xarm6）：
-        $ ros2 launch xarm_moveit_config dual_xarm6_moveit_fake.launch.py [add_gripper:=true]
+        ros2 launch xarm_moveit_config dual_xarm6_moveit_fake.launch.py [add_gripper:=true]
         
         # 对于Lite6：
-        $ ros2 launch xarm_moveit_config dual_lite6_moveit_fake.launch.py [add_gripper:=true]
+        ros2 launch xarm_moveit_config dual_lite6_moveit_fake.launch.py [add_gripper:=true]
 
         # 对于UFACTORY850：
-        $ ros2 launch xarm_moveit_config dual_uf850_moveit_fake.launch.py [add_gripper:=true]
+        ros2 launch xarm_moveit_config dual_uf850_moveit_fake.launch.py [add_gripper:=true]
         ```
     
     - 【Dual真机】启动moveit并在rviz显示, 控制两台机械臂   
     
         ```bash
-        $ cd ~/dev_ws/
+        cd ~/dev_ws/
         # robot_ip_1表示左臂控制的IP地址
         # robot_ip_2表示右臂控制的IP地址
         # add_gripper为true时会加载xarm夹爪的模型
@@ -319,49 +319,49 @@ __注意4: 以下描述的<hw_ns>用实际的替换，xarm系列默认为xarm, �
         # dof_2参数可以单独指定右臂轴数，默认为dof的值（这里为6，不同启动脚本不一样）
         
         # 对于xArm系列（xarm6）：
-        $ ros2 launch xarm_moveit_config dual_xarm6_moveit_realmove.launch.py robot_ip_1_1:=192.168.1.117 robot_ip_2:=192.168.1.203 [add_gripper:=true]
+        ros2 launch xarm_moveit_config dual_xarm6_moveit_realmove.launch.py robot_ip_1_1:=192.168.1.117 robot_ip_2:=192.168.1.203 [add_gripper:=true]
 
         # 对于Lite6：
-        $ ros2 launch xarm_moveit_config dual_lite6_moveit_realmove.launch.py robot_ip_1_1:=192.168.1.117 robot_ip_2:=192.168.1.203 [add_gripper:=true]
+        ros2 launch xarm_moveit_config dual_lite6_moveit_realmove.launch.py robot_ip_1_1:=192.168.1.117 robot_ip_2:=192.168.1.203 [add_gripper:=true]
 
         # 对于UFACTORY850：
-        $ ros2 launch xarm_moveit_config dual_uf850_moveit_realmove.launch.py robot_ip_1_1:=192.168.1.181 robot_ip_2:=192.168.1.182 [add_gripper:=true]
+        ros2 launch xarm_moveit_config dual_uf850_moveit_realmove.launch.py robot_ip_1_1:=192.168.1.181 robot_ip_2:=192.168.1.182 [add_gripper:=true]
         ```
 
 - ### 5.7 xarm_planner
     此模块提供了通过moveit API控制机械臂
     ```bash
-    $ cd ~/dev_ws/
+    cd ~/dev_ws/
     # 【虚拟xArm】启动xarm_planner_node
-    $ ros2 launch xarm_planner xarm6_planner_fake.launch.py [add_gripper:=true]
+    ros2 launch xarm_planner xarm6_planner_fake.launch.py [add_gripper:=true]
     # 【xArm真机】启动xarm_planner_node
-    $ ros2 launch xarm_planner xarm6_planner_realmove.launch.py robot_ip:=192.168.1.117 [add_gripper:=true]
+    ros2 launch xarm_planner xarm6_planner_realmove.launch.py robot_ip:=192.168.1.117 [add_gripper:=true]
 
     # 【虚拟lite6】启动xarm_planner_node
-    $ ros2 launch xarm_planner lite6_planner_fake.launch.py [add_gripper:=true]
+    ros2 launch xarm_planner lite6_planner_fake.launch.py [add_gripper:=true]
     # 【lite6真机】启动xarm_planner_node
-    $ ros2 launch xarm_planner lite6_planner_realmove.launch.py robot_ip:=192.168.1.117 [add_gripper:=true]
+    ros2 launch xarm_planner lite6_planner_realmove.launch.py robot_ip:=192.168.1.117 [add_gripper:=true]
 
     # 【虚拟UFACTORY850】启动xarm_planner_node
-    $ ros2 launch xarm_planner uf850_planner_fake.launch.py [add_gripper:=true]
+    ros2 launch xarm_planner uf850_planner_fake.launch.py [add_gripper:=true]
     # 【UFACTORY850真机】启动xarm_planner_node
-    $ ros2 launch xarm_planner uf850_planner_realmove.launch.py robot_ip:=192.168.1.181 [add_gripper:=true]
+    ros2 launch xarm_planner uf850_planner_realmove.launch.py robot_ip:=192.168.1.181 [add_gripper:=true]
     
     # 运行测试(通过API控制, 根据系列型号指定robot_type为xarm或lite或uf850)
-    $ ros2 launch xarm_planner test_xarm_planner_api_joint.launch.py dof:=6 robot_type:=<xarm | lite | uf850>
-    $ ros2 launch xarm_planner test_xarm_planner_api_pose.launch.py dof:=6 robot_type:=<xarm | lite | uf850>
+    ros2 launch xarm_planner test_xarm_planner_api_joint.launch.py dof:=6 robot_type:=<xarm | lite | uf850>
+    ros2 launch xarm_planner test_xarm_planner_api_pose.launch.py dof:=6 robot_type:=<xarm | lite | uf850>
     ```
     以下这些测试目前仅适用于xArm:
     ```bash
     # 运行测试（通过service控制）
-    $ ros2 launch xarm_planner test_xarm_planner_client_joint.launch.py dof:=6
-    $ ros2 launch xarm_planner test_xarm_planner_client_pose.launch.py dof:=6
+    ros2 launch xarm_planner test_xarm_planner_client_joint.launch.py dof:=6
+    ros2 launch xarm_planner test_xarm_planner_client_pose.launch.py dof:=6
 
     # 运行测试（通过API控制机械爪）
-    $ ros2 launch xarm_planner test_xarm_gripper_planner_api_joint.launch.py dof:=6
+    ros2 launch xarm_planner test_xarm_gripper_planner_api_joint.launch.py dof:=6
 
     # 运行测试（通过service控制机械爪）
-    $ ros2 launch xarm_planner test_xarm_gripper_planner_client_joint.launch.py dof:=6
+    ros2 launch xarm_planner test_xarm_gripper_planner_client_joint.launch.py dof:=6
     ```
 
 - ### 5.8 xarm_gazebo
@@ -372,28 +372,28 @@ __注意4: 以下描述的<hw_ns>用实际的替换，xarm系列默认为xarm, �
     
     - 单独测试xarm在gazebo上的显示：
         ```bash
-        $ cd ~/dev_ws/
+        cd ~/dev_ws/
         # 对于xArm系列（xarm6）：
-        $ ros2 launch xarm_gazebo xarm6_beside_table_gazebo.launch.py
+        ros2 launch xarm_gazebo xarm6_beside_table_gazebo.launch.py
 
         # 对于Lite6：
-        $ ros2 launch xarm_gazebo lite6_beside_table_gazebo.launch.py
+        ros2 launch xarm_gazebo lite6_beside_table_gazebo.launch.py
 
         # 对于UFACTORY850：
-        $ ros2 launch xarm_gazebo uf850_beside_table_gazebo.launch.py
+        ros2 launch xarm_gazebo uf850_beside_table_gazebo.launch.py
         ```
 
     - 联合moveit+gazebo进行控制：
         ```bash
-        $ cd ~/dev_ws/
+        cd ~/dev_ws/
         # 对于xArm系列（xarm6）：
-        $ ros2 launch xarm_moveit_config xarm6_moveit_gazebo.launch.py
+        ros2 launch xarm_moveit_config xarm6_moveit_gazebo.launch.py
 
         # 对于Lite6：
-        $ ros2 launch xarm_moveit_config lite6_moveit_gazebo.launch.py
+        ros2 launch xarm_moveit_config lite6_moveit_gazebo.launch.py
 
         # 对于UFACTORY850：
-        $ ros2 launch xarm_moveit_config uf850_moveit_gazebo.launch.py
+        ros2 launch xarm_moveit_config uf850_moveit_gazebo.launch.py
         ```
 
 - ### 5.9 xarm_moveit_servo
@@ -408,23 +408,23 @@ __注意4: 以下描述的<hw_ns>用实际的替换，xarm系列默认为xarm, �
         - 按键Y和按键A控制倒数第二个关节的转动
 
         ```bash
-        $ cd ~/dev_ws/
+        cd ~/dev_ws/
         # XBOX Wired -> joystick_type=1
         # XBOX Wireless -> joystick_type=2
 
         # 控制虚拟xArm6机械臂
-        $ ros2 launch xarm_moveit_servo xarm_moveit_servo_fake.launch.py joystick_type:=1
+        ros2 launch xarm_moveit_servo xarm_moveit_servo_fake.launch.py joystick_type:=1
         # 或者控制虚拟Lite6:
-        $ ros2 launch xarm_moveit_servo lite6_moveit_servo_fake.launch.py joystick_type:=1
+        ros2 launch xarm_moveit_servo lite6_moveit_servo_fake.launch.py joystick_type:=1
         # 或者控制虚拟UFACTORY850:
-        $ ros2 launch xarm_moveit_servo uf850_moveit_servo_fake.launch.py joystick_type:=1
+        ros2 launch xarm_moveit_servo uf850_moveit_servo_fake.launch.py joystick_type:=1
 
         # 控制真实xArm5机械臂
-        $ ros2 launch xarm_moveit_servo xarm_moveit_servo_realmove.launch.py robot_ip:=192.168.1.123 dof:=5 joystick_type:=1
+        ros2 launch xarm_moveit_servo xarm_moveit_servo_realmove.launch.py robot_ip:=192.168.1.123 dof:=5 joystick_type:=1
         # 或者控制真实Lite6:
-        $ ros2 launch xarm_moveit_servo lite6_moveit_servo_realmove.launch.py robot_ip:=192.168.1.123 joystick_type:=1
+        ros2 launch xarm_moveit_servo lite6_moveit_servo_realmove.launch.py robot_ip:=192.168.1.123 joystick_type:=1
         # 或者控制真实UFACTORY850:
-        $ ros2 launch xarm_moveit_servo uf850_moveit_servo_realmove.launch.py robot_ip:=192.168.1.181 joystick_type:=1
+        ros2 launch xarm_moveit_servo uf850_moveit_servo_realmove.launch.py robot_ip:=192.168.1.181 joystick_type:=1
         ```
 
     - 通过六维鼠标 __3Dconnexion SpaceMouse Wireless__ 来控制
@@ -433,40 +433,40 @@ __注意4: 以下描述的<hw_ns>用实际的替换，xarm系列默认为xarm, �
         - 右边按键按下时单独控制TCP的ROLL/PITCH/YAW
 
         ```bash
-        $ cd ~/dev_ws/
+        cd ~/dev_ws/
         # 控制虚拟xArm6机械臂
-        $ ros2 launch xarm_moveit_servo xarm_moveit_servo_fake.launch.py joystick_type:=3
+        ros2 launch xarm_moveit_servo xarm_moveit_servo_fake.launch.py joystick_type:=3
         # 或者控制虚拟Lite6:
-        $ ros2 launch xarm_moveit_servo lite6_moveit_servo_fake.launch.py joystick_type:=3
+        ros2 launch xarm_moveit_servo lite6_moveit_servo_fake.launch.py joystick_type:=3
         # 或者控制虚拟UFACTORY850:
-        $ ros2 launch xarm_moveit_servo uf850_moveit_servo_fake.launch.py joystick_type:=3
+        ros2 launch xarm_moveit_servo uf850_moveit_servo_fake.launch.py joystick_type:=3
 
         # 控制真实xArm5机械臂
-        $ ros2 launch xarm_moveit_servo xarm_moveit_servo_realmove.launch.py robot_ip:=192.168.1.123 dof:=5 joystick_type:=3
+        ros2 launch xarm_moveit_servo xarm_moveit_servo_realmove.launch.py robot_ip:=192.168.1.123 dof:=5 joystick_type:=3
         # 或者控制真实Lite6:
-        $ ros2 launch xarm_moveit_servo xarm_moveit_servo_realmove.launch.py robot_ip:=192.168.1.123 dof:=6 robot_type:=lite joystick_type:=3
+        ros2 launch xarm_moveit_servo xarm_moveit_servo_realmove.launch.py robot_ip:=192.168.1.123 dof:=6 robot_type:=lite joystick_type:=3
         # 或者控制真实UFACTORY850:
-        $ ros2 launch xarm_moveit_servo uf850_moveit_servo_realmove.launch.py robot_ip:=192.168.1.181 joystick_type:=3
+        ros2 launch xarm_moveit_servo uf850_moveit_servo_realmove.launch.py robot_ip:=192.168.1.181 joystick_type:=3
         ```
     - 通过 __键盘输入__ 控制
         ```bash
-        $ cd ~/dev_ws/
+        cd ~/dev_ws/
         # 控制虚拟xArm6机械臂
-        $ ros2 launch xarm_moveit_servo xarm_moveit_servo_fake.launch.py
+        ros2 launch xarm_moveit_servo xarm_moveit_servo_fake.launch.py
         # 或者控制虚拟Lite6:
-        $ ros2 launch xarm_moveit_servo lite6_moveit_servo_fake.launch.py
+        ros2 launch xarm_moveit_servo lite6_moveit_servo_fake.launch.py
         # 或者控制虚拟UFACTORY850:
-        $ ros2 launch xarm_moveit_servo uf850_moveit_servo_fake.launch.py
+        ros2 launch xarm_moveit_servo uf850_moveit_servo_fake.launch.py
 
         # 控制真实xArm5机械臂
-        $ ros2 launch xarm_moveit_servo xarm_moveit_servo_realmove.launch.py robot_ip:=192.168.1.123 dof:=5
+        ros2 launch xarm_moveit_servo xarm_moveit_servo_realmove.launch.py robot_ip:=192.168.1.123 dof:=5
         # 或者控制真实Lite6:
-        $ ros2 launch xarm_moveit_servo lite6_moveit_servo_realmove.launch.py robot_ip:=192.168.1.123
+        ros2 launch xarm_moveit_servo lite6_moveit_servo_realmove.launch.py robot_ip:=192.168.1.123
         # 或者控制真实UFACTORY850:
-        $ ros2 launch xarm_moveit_servo uf850_moveit_servo_realmove.launch.py robot_ip:=192.168.1.181
+        ros2 launch xarm_moveit_servo uf850_moveit_servo_realmove.launch.py robot_ip:=192.168.1.181
 
         # 之后在另一个终端，运行键盘输入响应节点
-        $ ros2 run xarm_moveit_servo xarm_keyboard_input
+        ros2 run xarm_moveit_servo xarm_keyboard_input
         ```
 - ### 5.10 xarm_vision
     提供xArm扩展视觉应用的基础示例，包括手眼标定和视觉抓取，例程主要基于[Intel RealSense D435i](https://www.intelrealsense.com/depth-camera-d435i/)深度相机。 
@@ -650,7 +650,7 @@ __注意4: 以下描述的<hw_ns>用实际的替换，xarm系列默认为xarm, �
     - __添加自定义末端工具(圆柱体)示例__  
     
         ```bash
-        $ ros2 launch xarm_gazebo xarm6_beside_table_gazebo.launch.py add_other_geometry:=true geometry_type:=cylinder geometry_height:=0.075 geometry_radius:=0.045
+        ros2 launch xarm_gazebo xarm6_beside_table_gazebo.launch.py add_other_geometry:=true geometry_type:=cylinder geometry_height:=0.075 geometry_radius:=0.045
         ```
 
     对于双臂启动脚本(dual_开头的)，可以通过以下参数分别指定:
