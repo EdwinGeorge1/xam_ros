@@ -474,50 +474,50 @@ __注意4: 以下描述的<hw_ns>用实际的替换，xarm系列默认为xarm, �
     - #### 5.10.1 相关依赖库和ros包的安装：
         - 首先进入ros工作空间：
             ```bash
-            $ cd ~/dev_ws/src/
+            cd ~/dev_ws/src/
             ```
 
         - ##### 安装RealSense 开发支持库和ROS软件包： 
             请依照[官方指示步骤](https://github.com/IntelRealSense/realsense-ros/tree/ros2-master)正确安装。
             ```bash
-            $ git clone -b ros2-master https://github.com/IntelRealSense/realsense-ros.git
+            git clone -b ros2-master https://github.com/IntelRealSense/realsense-ros.git
             ```
 
         - ##### 安装aruco_ros, 用于手眼标定：
             参考[官方Github](https://github.com/pal-robotics/aruco_ros/tree/humble-devel):
             ```bash
-            $ git clone -b humble-devel https://github.com/pal-robotics/aruco_ros.git
+            git clone -b humble-devel https://github.com/pal-robotics/aruco_ros.git
             ```
         - ##### 安装easy_handeye2, 用于手眼标定：
             参考[官方Github](https://github.com/marcoesposito1988/easy_handeye2):
             ```bash
-            $ git clone https://github.com/marcoesposito1988/easy_handeye2.git
+            git clone https://github.com/marcoesposito1988/easy_handeye2.git
             ``` 
         - ##### 安装find_object_2d包，用于物体识别：
             参考[官方Github](https://github.com/introlab/find-object/tree/humble-devel):
             ```bash
-            $ sudo apt-get install ros-humble-find-object-2d
+            sudo apt-get install ros-humble-find-object-2d
             ```
         - ##### 安装其他依赖包：
             ```bash
-            $ cd ~/dev_ws/src
-            $ rosdep update
-            $ rosdep install --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y
+            cd ~/dev_ws/src
+            rosdep update
+            rosdep install --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y
             ```
         - ##### 编译整个工作区：
             ```bash
-            $ colcon build
+            colcon build
             ```
 
     - #### 5.10.2 手眼标定示例：
         如果使用RealSense D435i相机配合固定工件安装在手臂末端，即“**眼在手上**”，确保相机与电脑通信正常且手臂正常上电后，可以参考和使用如下launch脚本进行手眼标定：
         ```bash
         # xArm 5/6/7
-        $ ros2 launch d435i_xarm_setup d435i_robot_auto_calib.launch.py robot_type:=xarm dof:=your_xArm_DOF robot_ip:=your_xArm_IP
+        ros2 launch d435i_xarm_setup d435i_robot_auto_calib.launch.py robot_type:=xarm dof:=your_xArm_DOF robot_ip:=your_xArm_IP
         # Lite6
-        $ ros2 launch d435i_xarm_setup d435i_robot_auto_calib.launch.py robot_type:=lite dof:=6 robot_ip:=your_xArm_IP
+        ros2 launch d435i_xarm_setup d435i_robot_auto_calib.launch.py robot_type:=lite dof:=6 robot_ip:=your_xArm_IP
         # UFACTORY850
-        $ ros2 launch d435i_xarm_setup d435i_robot_auto_calib.launch.py robot_type:=uf850 dof:=6 robot_ip:=your_xArm_IP
+        ros2 launch d435i_xarm_setup d435i_robot_auto_calib.launch.py robot_type:=uf850 dof:=6 robot_ip:=your_xArm_IP
         ```
         注意: 对于**2023年8月之后**生产的xArm/UF850系列型号, 可以选择将运动学校准参数加入到URDF模型中, 在以上的launch命令中使用`kinematics_suffix`参数来提高标定的准确度。   
 
@@ -536,11 +536,11 @@ __注意4: 以下描述的<hw_ns>用实际的替换，xarm系列默认为xarm, �
         1.使用moveit驱动手臂动作，如果规划成功会保证无碰撞和奇异点的轨迹执行, 但对网络通信稳定性要求较高：
         ```bash
         # xArm 5/6/7
-        $ ros2 launch d435i_xarm_setup d435i_findobj2d_robot_moveit_planner.launch.py robot_type=xarm dof:=your_xArm_DOF robot_ip:=your_xArm_IP
+        ros2 launch d435i_xarm_setup d435i_findobj2d_robot_moveit_planner.launch.py robot_type=xarm dof:=your_xArm_DOF robot_ip:=your_xArm_IP
         # Lite6
-        $ ros2 launch d435i_xarm_setup d435i_findobj2d_robot_moveit_planner.launch.py robot_type=lite dof:=6 robot_ip:=your_xArm_IP
+        ros2 launch d435i_xarm_setup d435i_findobj2d_robot_moveit_planner.launch.py robot_type=lite dof:=6 robot_ip:=your_xArm_IP
         # UFACTORY850
-        $ ros2 launch d435i_xarm_setup d435i_findobj2d_robot_moveit_planner.launch.py robot_type=uf850 dof:=6 robot_ip:=your_xArm_IP
+        ros2 launch d435i_xarm_setup d435i_findobj2d_robot_moveit_planner.launch.py robot_type=uf850 dof:=6 robot_ip:=your_xArm_IP
 
         # 默认使用的标定参数是~/.ros2/easy_handeye2/calibrations/{robot_type}_rs_on_hand_calibration.calib
         # 如果需要指定启动参数calib_filename, 将使用d435i_xarm_setup/config/{calib_filename}.calib文件记录的标定参数
@@ -548,22 +548,22 @@ __注意4: 以下描述的<hw_ns>用实际的替换，xarm系列默认为xarm, �
         如果目标物体可以正常识别，执行抓取节点:  
         ```bash
         # xArm 5/6/7
-        $ ros2 launch d435i_xarm_setup grasp_node_robot_moveit_planner.launch.py robot_type=xarm dof:=your_xArm_DOF
+        ros2 launch d435i_xarm_setup grasp_node_robot_moveit_planner.launch.py robot_type=xarm dof:=your_xArm_DOF
         # Lite6
-        $ ros2 launch d435i_xarm_setup grasp_node_robot_moveit_planner.launch.py robot_type=lite dof:=6
+        ros2 launch d435i_xarm_setup grasp_node_robot_moveit_planner.launch.py robot_type=lite dof:=6
         # UFACTORY850
-        $ ros2 launch d435i_xarm_setup grasp_node_robot_moveit_planner.launch.py robot_type=uf850 dof:=6
+        ros2 launch d435i_xarm_setup grasp_node_robot_moveit_planner.launch.py robot_type=uf850 dof:=6
         ```
         节点代码可以参考d435i_xarm_setup/src/[findobj_grasp_moveit_planner.cpp](./xarm_vision/d435i_xarm_setup/src/findobj_grasp_moveit_planner.cpp).  
 
         2.或者使用xarm_api提供的ros service驱动手臂动作，网络稳定性要求不高，但部分时候执行过程中可能报错（奇异点或将要发生自碰撞等）：
         ```bash
         # xArm 5/6/7
-        $ ros2 launch d435i_xarm_setup d435i_findobj2d_robot_api.launch.py robot_type=xarm dof:=your_xArm_DOF robot_ip:=your_xArm_IP
+        ros2 launch d435i_xarm_setup d435i_findobj2d_robot_api.launch.py robot_type=xarm dof:=your_xArm_DOF robot_ip:=your_xArm_IP
         # Lite6
-        $ ros2 launch d435i_xarm_setup d435i_findobj2d_robot_api.launch.py robot_type=lite dof:=6 robot_ip:=your_xArm_IP
+        ros2 launch d435i_xarm_setup d435i_findobj2d_robot_api.launch.py robot_type=lite dof:=6 robot_ip:=your_xArm_IP
         # UFACTORY850
-        $ ros2 launch d435i_xarm_setup d435i_findobj2d_robot_api.launch.py robot_type=uf850 dof:=6 robot_ip:=your_xArm_IP
+        ros2 launch d435i_xarm_setup d435i_findobj2d_robot_api.launch.py robot_type=uf850 dof:=6 robot_ip:=your_xArm_IP
 
         # 默认使用的标定参数是~/.ros2/easy_handeye2/calibrations/{robot_type}_rs_on_hand_calibration.calib
         # 如果需要指定启动参数calib_filename, 将使用d435i_xarm_setup/config/{calib_filename}.calib文件记录的标定参数
@@ -571,11 +571,11 @@ __注意4: 以下描述的<hw_ns>用实际的替换，xarm系列默认为xarm, �
         如果目标物体可以正常识别，执行抓取节点:  
         ```bash
         # xArm 5/6/7
-        $ ros2 launch d435i_xarm_setup grasp_node_robot_api.launch.py robot_type=xarm dof:=your_xArm_DOF
+        ros2 launch d435i_xarm_setup grasp_node_robot_api.launch.py robot_type=xarm dof:=your_xArm_DOF
         # Lite6
-        $ ros2 launch d435i_xarm_setup grasp_node_robot_api.launch.py robot_type=lite dof:=6
+        ros2 launch d435i_xarm_setup grasp_node_robot_api.launch.py robot_type=lite dof:=6
         # UFACTORY850
-        $ ros2 launch d435i_xarm_setup grasp_node_robot_api.launch.py robot_type=uf850 dof:=6
+        ros2 launch d435i_xarm_setup grasp_node_robot_api.launch.py robot_type=uf850 dof:=6
         ``` 
         节点代码可以参考d435i_xarm_setup/src/[findobj_grasp_xarm_api.cpp](./xarm_vision/d435i_xarm_setup/src/findobj_grasp_xarm_api.cpp).
 
@@ -586,7 +586,7 @@ __注意4: 以下描述的<hw_ns>用实际的替换，xarm系列默认为xarm, �
     - #### 7.4 在仿真的xArm模型末端添加RealSense D435i模型：
         如果使用UFACTORY提供的camera stand固定，可以通过以下设置添加到虚拟模型（以xarm7为例）：  
         ```bash
-        $ ros2 launch xarm_moveit_config xarm7_moveit_fake.launch add_realsense_d435i:=true
+        ros2 launch xarm_moveit_config xarm7_moveit_fake.launch add_realsense_d435i:=true
         ```
 
 

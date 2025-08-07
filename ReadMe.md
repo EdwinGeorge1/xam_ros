@@ -486,38 +486,38 @@ __Reminder 4: The <hw_ns> described below is replaced with the actual one, the x
     - #### 5.10.1 Installation of dependent packages:
         - First enter the workspace source directory:
             ```bash
-            $ cd ~/dev_ws/src/
+            cd ~/dev_ws/src/
             ```
         - ##### Install RealSense developer library and ROS package： 
             Please refer to the installation steps at [official webpage](https://github.com/IntelRealSense/realsense-ros/tree/ros2-master).
             ```bash
-            $ git clone -b ros2-master https://github.com/IntelRealSense/realsense-ros.git
+            git clone -b ros2-master https://github.com/IntelRealSense/realsense-ros.git
             ```
 
         - ##### Install 'aruco_ros', for hand-eye calibration：
             Refer to [official Github](https://github.com/pal-robotics/aruco_ros/tree/humble-devel):
             ```bash
-            $ git clone -b humble-devel https://github.com/pal-robotics/aruco_ros.git
+            git clone -b humble-devel https://github.com/pal-robotics/aruco_ros.git
             ```
         - ##### Install 'easy_handeye2', for hand-eye calibration：
             Refer to [official Github](https://github.com/marcoesposito1988/easy_handeye2):
             ```bash
-            $ git clone https://github.com/marcoesposito1988/easy_handeye2.git
+            git clone https://github.com/marcoesposito1988/easy_handeye2.git
             ``` 
         - ##### Install 'find_object_2d', for object detection：
             Refer to [official Github](https://github.com/introlab/find-object/tree/humble-devel):
             ```bash
-            $ sudo apt-get install ros-humble-find-object-2d
+            sudo apt-get install ros-humble-find-object-2d
             ```
         - ##### Install other dependencies：
             ```bash
-            $ cd ~/dev_ws/src
-            $ rosdep update
-            $ rosdep install --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y
+            cd ~/dev_ws/src
+            rosdep update
+            rosdep install --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y
             ```
         - ##### Build the whole workspace：
             ```bash
-            $ colcon build
+            colcon build
             ```
 
     - #### 5.10.2 Hand-eye Calibration Demo：
@@ -525,11 +525,11 @@ __Reminder 4: The <hw_ns> described below is replaced with the actual one, the x
 
         ```bash 
         # xArm 5/6/7
-        $ ros2 launch d435i_xarm_setup d435i_robot_auto_calib.launch.py robot_type:=xarm dof:=your_xArm_DOF robot_ip:=your_xArm_IP
+        ros2 launch d435i_xarm_setup d435i_robot_auto_calib.launch.py robot_type:=xarm dof:=your_xArm_DOF robot_ip:=your_xArm_IP
         # Lite6
-        $ ros2 launch d435i_xarm_setup d435i_robot_auto_calib.launch.py robot_type:=lite dof:=6 robot_ip:=your_xArm_IP
+        ros2 launch d435i_xarm_setup d435i_robot_auto_calib.launch.py robot_type:=lite dof:=6 robot_ip:=your_xArm_IP
         # UFACTORY850
-        $ ros2 launch d435i_xarm_setup d435i_robot_auto_calib.launch.py robot_type:=uf850 dof:=6 robot_ip:=your_xArm_IP
+        ros2 launch d435i_xarm_setup d435i_robot_auto_calib.launch.py robot_type:=uf850 dof:=6 robot_ip:=your_xArm_IP
         ```
 
         Note: for xArm/UF850 produced **after August 2023**, kinematic calibration can be added to the URDF model, you can specify `kinematics_suffix` parameter for better accuracy.  
@@ -551,11 +551,11 @@ __Reminder 4: The <hw_ns> described below is replaced with the actual one, the x
         Use moveit to drive xArm's motion，recommended for singularity and collision free execution, but will require a reliable network connection.  
         ```bash
         # xArm 5/6/7
-        $ ros2 launch d435i_xarm_setup d435i_findobj2d_robot_moveit_planner.launch.py robot_type=xarm dof:=your_xArm_DOF robot_ip:=your_xArm_IP
+        ros2 launch d435i_xarm_setup d435i_findobj2d_robot_moveit_planner.launch.py robot_type=xarm dof:=your_xArm_DOF robot_ip:=your_xArm_IP
         # Lite6
-        $ ros2 launch d435i_xarm_setup d435i_findobj2d_robot_moveit_planner.launch.py robot_type=lite dof:=6 robot_ip:=your_xArm_IP
+        ros2 launch d435i_xarm_setup d435i_findobj2d_robot_moveit_planner.launch.py robot_type=lite dof:=6 robot_ip:=your_xArm_IP
         # UFACTORY850
-        $ ros2 launch d435i_xarm_setup d435i_findobj2d_robot_moveit_planner.launch.py robot_type=uf850 dof:=6 robot_ip:=your_xArm_IP
+        ros2 launch d435i_xarm_setup d435i_findobj2d_robot_moveit_planner.launch.py robot_type=uf850 dof:=6 robot_ip:=your_xArm_IP
 
         # The default calibration parameters are ~/.ros2/easy_handeye2/calibrations/{robot_type}_rs_on_hand_calibration.calib
         # If you need to specify the startup parameter calib_filename, the calibration parameters recorded in the d435i_xarm_setup/config/{calib_filename}.calib file will be used
@@ -563,22 +563,22 @@ __Reminder 4: The <hw_ns> described below is replaced with the actual one, the x
         If target object can be properly detected, to run the Grasping node:  
         ```bash
         # xArm 5/6/7
-        $ ros2 launch d435i_xarm_setup grasp_node_robot_moveit_planner.launch.py robot_type=xarm dof:=your_xArm_DOF
+        ros2 launch d435i_xarm_setup grasp_node_robot_moveit_planner.launch.py robot_type=xarm dof:=your_xArm_DOF
         # Lite6
-        $ ros2 launch d435i_xarm_setup grasp_node_robot_moveit_planner.launch.py robot_type=lite dof:=6
+        ros2 launch d435i_xarm_setup grasp_node_robot_moveit_planner.launch.py robot_type=lite dof:=6
         # UFACTORY850
-        $ ros2 launch d435i_xarm_setup grasp_node_robot_moveit_planner.launch.py robot_type=uf850 dof:=6
+        ros2 launch d435i_xarm_setup grasp_node_robot_moveit_planner.launch.py robot_type=uf850 dof:=6
         ```
         For node program source code, refer to: d435i_xarm_setup/src/[findobj_grasp_moveit_planner.cpp](./xarm_vision/d435i_xarm_setup/src/findobj_grasp_moveit_planner.cpp).  
 
         2.Alternatively, to drive xArm motion with ros service provided by 'xarm_api', in this way, real-time performance of network will not be required so strict as moveit way, but execution may fail in the middle if singularity or self-collision is about to occur. 
         ```bash
         # xArm 5/6/7
-        $ ros2 launch d435i_xarm_setup d435i_findobj2d_robot_api.launch.py robot_type=xarm dof:=your_xArm_DOF robot_ip:=your_xArm_IP
+        ros2 launch d435i_xarm_setup d435i_findobj2d_robot_api.launch.py robot_type=xarm dof:=your_xArm_DOF robot_ip:=your_xArm_IP
         # Lite6
-        $ ros2 launch d435i_xarm_setup d435i_findobj2d_robot_api.launch.py robot_type=lite dof:=6 robot_ip:=your_xArm_IP
+        ros2 launch d435i_xarm_setup d435i_findobj2d_robot_api.launch.py robot_type=lite dof:=6 robot_ip:=your_xArm_IP
         # UFACTORY850
-        $ ros2 launch d435i_xarm_setup d435i_findobj2d_robot_api.launch.py robot_type=uf850 dof:=6 robot_ip:=your_xArm_IP
+        ros2 launch d435i_xarm_setup d435i_findobj2d_robot_api.launch.py robot_type=uf850 dof:=6 robot_ip:=your_xArm_IP
 
         # The default calibration parameters are ~/.ros2/easy_handeye2/calibrations/{robot_type}_rs_on_hand_calibration.calib
         # If you need to specify the startup parameter calib_filename, the calibration parameters recorded in the d435i_xarm_setup/config/{calib_filename}.calib file will be used
@@ -586,11 +586,11 @@ __Reminder 4: The <hw_ns> described below is replaced with the actual one, the x
         If target object can be properly detected, to run the Grasping node:  
         ```bash
         # xArm 5/6/7
-        $ ros2 launch d435i_xarm_setup grasp_node_robot_api.launch.py robot_type=xarm dof:=your_xArm_DOF
+        ros2 launch d435i_xarm_setup grasp_node_robot_api.launch.py robot_type=xarm dof:=your_xArm_DOF
         # Lite6
-        $ ros2 launch d435i_xarm_setup grasp_node_robot_api.launch.py robot_type=lite dof:=6
+        ros2 launch d435i_xarm_setup grasp_node_robot_api.launch.py robot_type=lite dof:=6
         # UFACTORY850
-        $ ros2 launch d435i_xarm_setup grasp_node_robot_api.launch.py robot_type=uf850 dof:=6
+        ros2 launch d435i_xarm_setup grasp_node_robot_api.launch.py robot_type=uf850 dof:=6
         ```
         For node program source code, refer to: d435i_xarm_setup/src/[findobj_grasp_xarm_api.cpp](./xarm_vision/d435i_xarm_setup/src/findobj_grasp_xarm_api.cpp).  
 
@@ -601,7 +601,7 @@ __Reminder 4: The <hw_ns> described below is replaced with the actual one, the x
     - #### 5.10.4 Adding RealSense D435i model to simulated xArm：
         For installation with camera stand provided by UFACTORY, the cam model can be attached by following modifications (use xarm7 as example):    
         ```bash
-        $ ros2 launch xarm_moveit_config xarm7_moveit_fake.launch add_realsense_d435i:=true
+        ros2 launch xarm_moveit_config xarm7_moveit_fake.launch add_realsense_d435i:=true
         ```
 
 ## 6. Instruction on major launch arguments
