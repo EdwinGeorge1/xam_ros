@@ -319,13 +319,13 @@ __注意4: 以下描述的<hw_ns>用实际的替换，xarm系列默认为xarm, �
         # dof_2参数可以单独指定右臂轴数，默认为dof的值（这里为6，不同启动脚本不一样）
         
         # 对于xArm系列（xarm6）：
-        ros2 launch xarm_moveit_config dual_xarm6_moveit_realmove.launch.py robot_ip_1_1:=192.168.1.117 robot_ip_2:=192.168.1.203 [add_gripper:=true]
+        ros2 launch xarm_moveit_config dual_xarm6_moveit_realmove.launch.py robot_ip_1:=192.168.1.117 robot_ip_2:=192.168.1.203 [add_gripper:=true]
 
         # 对于Lite6：
-        ros2 launch xarm_moveit_config dual_lite6_moveit_realmove.launch.py robot_ip_1_1:=192.168.1.117 robot_ip_2:=192.168.1.203 [add_gripper:=true]
+        ros2 launch xarm_moveit_config dual_lite6_moveit_realmove.launch.py robot_ip_1:=192.168.1.117 robot_ip_2:=192.168.1.203 [add_gripper:=true]
 
         # 对于UFACTORY850：
-        ros2 launch xarm_moveit_config dual_uf850_moveit_realmove.launch.py robot_ip_1_1:=192.168.1.181 robot_ip_2:=192.168.1.182 [add_gripper:=true]
+        ros2 launch xarm_moveit_config dual_uf850_moveit_realmove.launch.py robot_ip_1:=192.168.1.181 robot_ip_2:=192.168.1.182 [add_gripper:=true]
         ```
 
 - ### 5.7 xarm_planner
