@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>parol6_pipeline</name>
+  <version>0.0.1</version>
+  <description>ROS 2 vision + pick controller nodes for Parol6 robotic arm.</description>
+  <maintainer email="syedazif321@gmail.com">azif</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <!-- Core dependencies -->
+  <depend>rclcpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>std_srvs</depend>
+  <depend>cv_bridge</depend>
+  <depend>image_transport</depend>
+  <depend>OpenCV</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
+  <depend>tf2_geometry_msgs</depend>
+  <depend>message_filters</depend>
+  <depend>moveit_ros_planning_interface</depend>
+  <depend>moveit_msgs</depend>
+  <depend>msg_gazebo</depend>
+  <depend>nlohmann_json</depend>
+  <depend>builtin_interfaces</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

@@ -30,13 +30,13 @@ def launch_setup(context, *args, **kwargs):
     effort_control = LaunchConfiguration('effort_control', default=False)
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     add_gripper = LaunchConfiguration('add_gripper', default=False)
-    add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
+    add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=True)
     add_bio_gripper = LaunchConfiguration('add_bio_gripper', default=False)
     dof = LaunchConfiguration('dof', default=7)
     robot_type = LaunchConfiguration('robot_type', default='xarm')
     ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='gazebo_ros2_control/GazeboSystem')
     
-    add_realsense_d435i = LaunchConfiguration('add_realsense_d435i', default=False)
+    add_realsense_d435i = LaunchConfiguration('add_realsense_d435i', default=True)
     add_d435i_links = LaunchConfiguration('add_d435i_links', default=True)
     model1300 = LaunchConfiguration('model1300', default=False)
     robot_sn = LaunchConfiguration('robot_sn', default='')
@@ -215,8 +215,36 @@ def launch_setup(context, *args, **kwargs):
                 parameters=[{'use_sim_time': True}],
             ))
 
+    # =====================================================
+    #              PICK CONTROLLER NODE (New)
+    # =====================================================
+    # The pick_controller requires the robot description parameters to be loaded
+    # and the MoveIt stack to be running (usually started by another launch file).
+    # We pass the required parameters so it can initialize MoveGroupInterface.
+    xarm_moveit_config_share = FindPackageShare(moveit_config_package_name)
+    
+    pick_controller_node = Node(
+        package='parol6_pipeline',
+        executable='pick_controller',
+        name='pick_controller',
+        output='screen',
+        parameters=[
+            # This points the node to the parameters published by the MoveIt launch (if running globally)
+            # or from the loaded moveit_config_dict if the launch is handling all params.
+            {
+                'robot_description': moveit_config_dict.get('robot_description', ''),
+                'robot_description_semantic': moveit_config_dict.get('robot_description_semantic', ''),
+                'robot_description_kinematics': moveit_config_dict.get('robot_description_kinematics', {}),
+                'planning_pipelines': moveit_config_dict.get('planning_pipelines', {}),
+                'use_sim_time': True
+            }
+        ],
+    )
+    # =====================================================
+
+    
     if len(controller_nodes) > 0:
-        return [
+        actions = [
             RegisterEventHandler(
                 event_handler=OnProcessStart(
                     target_action=robot_state_publisher_node,
@@ -229,6 +257,7 @@ def launch_setup(context, *args, **kwargs):
                     on_start=gazebo_spawn_entity_node,
                 )
             ),
+            # RVIZ Launch (depends on gazebo spawn finishing)
             RegisterEventHandler(
                 condition=IfCondition(show_rviz),
                 event_handler=OnProcessExit(
@@ -236,18 +265,27 @@ def launch_setup(context, *args, **kwargs):
                     on_exit=rviz2_node,
                 )
             ),
+            # Controller Launch (depends on gazebo spawn finishing)
             RegisterEventHandler(
                 event_handler=OnProcessExit(
                     target_action=gazebo_spawn_entity_node,
                     on_exit=controller_nodes,
                 )
             ),
+            # PICK CONTROLLER LAUNCH (depends on gazebo spawn finishing)
+            # Starting the pick controller after the robot is spawned is usually safer 
+            # than waiting for all controllers/MoveIt nodes, but it's the next best thing.
+            RegisterEventHandler(
+                event_handler=OnProcessExit(
+                    target_action=gazebo_spawn_entity_node,
+                    on_exit=pick_controller_node,
+                )
+            ),
             robot_state_publisher_node,
-            # gazebo_launch,
-            # gazebo_spawn_entity_node,
         ]
     else:
-        return [
+        # If no controllers are loaded, the logic is simpler
+        actions = [
             RegisterEventHandler(
                 event_handler=OnProcessStart(
                     target_action=robot_state_publisher_node,
@@ -260,6 +298,7 @@ def launch_setup(context, *args, **kwargs):
                     on_start=gazebo_spawn_entity_node,
                 )
             ),
+            # RVIZ Launch (depends on gazebo spawn finishing)
             RegisterEventHandler(
                 condition=IfCondition(show_rviz),
                 event_handler=OnProcessExit(
@@ -267,10 +306,45 @@ def launch_setup(context, *args, **kwargs):
                     on_exit=rviz2_node,
                 )
             ),
+            # PICK CONTROLLER LAUNCH (depends on gazebo spawn finishing)
+            RegisterEventHandler(
+                event_handler=OnProcessExit(
+                    target_action=gazebo_spawn_entity_node,
+                    on_exit=pick_controller_node,
+                )
+            ),
             robot_state_publisher_node,
-            # gazebo_launch,
-            # gazebo_spawn_entity_node,
         ]
+    
+    # Add Aruco detector directly as it only depends on TF and camera
+    aruco_pose_detector_node = Node(
+        package='parol6_pipeline',
+        executable='aruco_pose_detector',
+        name='aruco_pose_detector',
+        output='screen',
+        parameters=[{
+            'camera_frame': 'camera_color_optical_frame',
+            'base_frame': 'link_base',
+            'marker_id': 0,
+            'marker_length': 0.05,
+            'offset_roll': 0.0,
+            'offset_pitch': 0.0,
+            'offset_yaw': -90.0,
+            'offset_z': 0.003
+        }]
+    )
+    
+    # The Aruco detector should start when the robot state is published (which includes the camera TF)
+    actions.append(
+        RegisterEventHandler(
+            event_handler=OnProcessStart(
+                target_action=robot_state_publisher_node,
+                on_start=aruco_pose_detector_node,
+            )
+        )
+    )
+
+    return actions
 
 
 def generate_launch_description():
