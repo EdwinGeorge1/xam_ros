@@ -51,3 +51,15 @@ Detach the box from the end-effector:
 ```bash
 ros2 service call /AttachDetach msg_gazebo/srv/AttachDetach "{model1: 'UF_ROBOT', link1: 'link6', model2: 'aruco_box', link2: 'link_0', attach: false}"
 ```
+
+## Demo Video
+
+Here is a demonstration of the system:
+
+![iHub Demo](demo/ihub.gif)
+
+## Documentation
+
+For detailed documentation, see the PDF:
+
+[Download iHub Documentation](I%20HUb%20.pdf)
